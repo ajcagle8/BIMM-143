@@ -1,0 +1,43 @@
+---
+title: "HW 6"
+author: "Alex Cagle"
+date: "2023-04-30"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(bio3d)
+```
+
+```{r}
+# Creating function to analyze protein drug interactions by reading in protein PDB data
+# The function takes in a PDB ID as input
+# The function outputs a plot of B-factor values vs residue for the specified protein
+# The function reads in a protein structure from its PDB ID, trims it to get the CA atoms from chain A, gets the B-factors, and then creates a line plot of B-factor values vs residue
+analyze_protein_interaction <- function(pdb_id) {
+  # Reads PDB ID
+  s <- read.pdb(pdb_id)
+  
+  # Gets CA atoms from chain A
+  s.chainA <- trim.pdb(s, chain='A', elety='CA')
+  
+  # Gets B-factors
+  s.b <- s.chainA$atom$b
+  
+  # Plots B-factors
+  plotb3(s.b, sse=s.chainA, typ='l', ylab='Bfactor', main = paste("Plot for:", pdb_id))
+}
+```
+
+```{r}
+pdb_ids <- c("4AKE", "1AKE", "1E4Y")
+
+# Iterating through list of ids and calling analyze_pdb function on each PDB ID
+for (id in pdb_ids) {
+  analyze_protein_interaction(id)
+}
+```

@@ -1,0 +1,11 @@
+---
+title: "class_15"
+author: "Alex Cagle"
+date: "2023-05-30"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

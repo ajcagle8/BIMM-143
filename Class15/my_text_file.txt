@@ -1,0 +1,15 @@
+This is  my text notes for class 15.
+
+Successfully initiated launch of instance (i-0a3c6e93c87edb994)
+
+Instance ID
+i-0a3c6e93c87edb994 (bimm143_lab15_ac)
+
+ssh -i "bimm143_lab15_ac.pem" ubuntu@ec2-18-237-123-135.us-west-2.compute.amazonaws.com
+
+
+grep -c ">" mouse.*
+
+
+scp -i "bimm143_lab15_ac.pem"
+ubuntu@ec2-18-237-123-135.us-west-2.compute.amazonaws.com:~/work/*.tsv results.tsv

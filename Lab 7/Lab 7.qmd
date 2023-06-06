@@ -1,0 +1,206 @@
+---
+title: "Class 07: Clustering and PCA"
+author: "Alex Cagle"
+format: pdf
+editor: visual
+---
+
+## Clustering
+
+We can use the `rnorm()` function to get random numbers from a normal distribution around a given `mean`.
+
+```{r}
+hist(rnorm(5000, mean=1))
+```
+
+Let's get 30 points with a mean of 3.
+
+```{r}
+rnorm1 <- rnorm(30, mean=3)
+rnorm1
+
+# rnorm2 <- rnorm(30, mean=-30)
+# rnorm2
+
+# x <- c(rnorm1, rnorm2)
+# x
+
+# cbind(rnorm1, rnorm2)
+
+# rev( c(1:5) )
+
+# y <- cbind( rev(rnorm1), rev(rnorm2) )
+# y
+```
+
+```{r}
+tmp <- c(rnorm(30, mean=3), rnorm(30, mean=-3))
+tmp
+```
+
+```{r}
+# Put these two together
+x <- cbind(x=tmp, y=rev(tmp))
+x
+plot(x)
+```
+
+## K-means clustering
+
+Very popular clustering method for big data sets.
+
+```{r}
+km <- kmeans(x, 2)
+km
+```
+
+```{r}
+km$cluster
+km$size
+km$centers
+```
+
+> Q: How many points are in each cluster?
+
+```{r}
+# We can use km$size to see how many points are in each cluster
+# In this case, there are 30 points in each cluster
+km$size
+```
+
+> Q: What 'component' of your result object details:
+>
+> -   cluster size?
+>
+> -   cluster assignment/membership?
+>
+> -   cluster center?
+
+```{r}
+# Cluster size
+km$size
+
+# Membership
+km$cluster
+
+# Cluster center
+km$centers
+```
+
+> Q: Plot x colored by the kmeans cluster assignment and add cluster centers as blue points.
+
+```{r}
+mycols <- km$cluster
+mycols <- mycols + 1
+plot(x, col = mycols)
+points(km$centers, col = 'blue', pch = 15, cex = 3)
+```
+
+> Q: Let's cluster into 3 groups or same 'x' data and make a plot.
+
+```{r}
+km2 <- kmeans(x, 3)
+km2
+
+plot(x, col = km2$cluster)
+points(km2$centers, col = 'blue', pch = 15, cex = 3)
+```
+
+# Hierarchical Clustering
+
+We can use the `hclust()` function for hierarchical clustering. Unlike `kmeans()` where we could just pass in our own data as input, we need to give `hclust()` a "distance matrix" (how far apart the points are, e.g. Euclidean distance `dist()` or other types of distance).
+
+We will use the `dist()` function to start with.
+
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+hc
+```
+
+```{r}
+plot(hc)
+```
+
+I can now "cut" my tree with the `cutree()` function to yield a cluster membership vector.
+
+```{r}
+grps <- cutree(hc, h=8)
+grps
+```
+
+```{r}
+plot(x, col = grps)
+```
+
+You can also tell `cutree()` to cut where it yields "k" groups.
+
+```{r}
+cutree(hc, k=2)
+```
+
+# Lab 7: Principal Component Analysis (PCA)
+
+## PCA of UK Foods
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+
+# Q2: This solves the 'row-names problem'. In my opinion, this way is better since it automatically sets the first column as the names column, which makes operating on the dataset easier.
+```
+
+```{r}
+# Finding number of rows and columns
+dim(x)
+
+# Q1: We have 17 rows and 4 columns, where each column is a country.
+```
+
+```{r}
+# Using head to preview first 6 rows
+head(x)
+```
+
+```{r}
+# Generating barplot
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+
+# Q3: We set beside=FALSE to change the barplot into a stacked format instead of the bars being side by side.
+```
+
+```{r}
+# Generating pairwise plots. 
+pairs(x, col=rainbow(10), pch=16)
+
+# Q5: If a point lines on the diagonal, then that means that the country on the y-axis and the country on the x-axis have the same amount of that product. 
+```
+
+> Q5: If a datapoint is on the diagonal, then the countries have the same amount of that product. If a datapoint is above the diagonal then the country on the y-axis has a higher amount of that product. If a datapoint is below the diagonal line (i.e. further to the right) then the country on the x-axis has more of that product.
+
+> Q6: N. Ireland has more of the blue datapoint than other countries, since that datapoint is further to the right on the graph (below diagonal) when N. Ireland is plotted on the x-axis, and higher up on the graph (above diagonal) when N. Ireland is plotted on the y-axis.
+
+The main PCA function in base R is called `prcomp()` it expects the transpose of our data.
+
+```{r}
+pca <- prcomp( t(x) )
+summary(pca)
+```
+
+```{r}
+attributes(pca)
+```
+
+```{r}
+# Q7: Competing the pca plot code.
+plot(pca$x[,1], pca$x[,2], 
+     xlab="PC1", ylab="PC2", 
+     col = 'transparent', 
+     pch = 16, 
+     xlim=c(-270,500))
+
+# Q8: Customizing the plot by adding color.
+text(pca$x[,1], pca$x[,2], 
+     colnames(x), 
+     col = c("orange", "red", "blue", "darkgreen"))
+```

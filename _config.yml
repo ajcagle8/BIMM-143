@@ -1,4 +1,4 @@
-theme: jekyll-theme-midnight
-logo: <img src="dna.gif" alt="My Logo">
+theme: jekyll-theme-minimal
+logo: dna.gif
 title: Bioinformatics
 

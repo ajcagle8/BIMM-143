@@ -1,0 +1,261 @@
+---
+title: "Lab 17: Investigating Pertussis"
+author: "Alex Cagle"
+date: "2023-06-06"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Pertussis (whooping cough) is a highly contagious lung infection caused by the bacteria *B. pertussis*.
+
+It became a significant issue in the 1920s.
+
+```{r}
+library(ggplot2)
+library(datapasta)
+library(jsonlite)
+library(dplyr)
+```
+> Q1. With the help of the R “addin” package datapasta assign the CDC pertussis case number data to a data frame called cdc and use ggplot to make a plot of cases numbers over time.
+
+```{r}
+# load cdc pertussis data
+cdc <- data.frame(
+                                 Year = c(1922L,1923L,1924L,1925L,
+                                          1926L,1927L,1928L,1929L,1930L,1931L,
+                                          1932L,1933L,1934L,1935L,1936L,
+                                          1937L,1938L,1939L,1940L,1941L,1942L,
+                                          1943L,1944L,1945L,1946L,1947L,
+                                          1948L,1949L,1950L,1951L,1952L,
+                                          1953L,1954L,1955L,1956L,1957L,1958L,
+                                          1959L,1960L,1961L,1962L,1963L,
+                                          1964L,1965L,1966L,1967L,1968L,1969L,
+                                          1970L,1971L,1972L,1973L,1974L,
+                                          1975L,1976L,1977L,1978L,1979L,1980L,
+                                          1981L,1982L,1983L,1984L,1985L,
+                                          1986L,1987L,1988L,1989L,1990L,
+                                          1991L,1992L,1993L,1994L,1995L,1996L,
+                                          1997L,1998L,1999L,2000L,2001L,
+                                          2002L,2003L,2004L,2005L,2006L,2007L,
+                                          2008L,2009L,2010L,2011L,2012L,
+                                          2013L,2014L,2015L,2016L,2017L,2018L,
+                                          2019L,2020L,2021L),
+         No..Reported.Pertussis.Cases = c(107473,164191,165418,152003,
+                                          202210,181411,161799,197371,
+                                          166914,172559,215343,179135,265269,
+                                          180518,147237,214652,227319,103188,
+                                          183866,222202,191383,191890,109873,
+                                          133792,109860,156517,74715,69479,
+                                          120718,68687,45030,37129,60886,
+                                          62786,31732,28295,32148,40005,
+                                          14809,11468,17749,17135,13005,6799,
+                                          7717,9718,4810,3285,4249,3036,
+                                          3287,1759,2402,1738,1010,2177,2063,
+                                          1623,1730,1248,1895,2463,2276,
+                                          3589,4195,2823,3450,4157,4570,
+                                          2719,4083,6586,4617,5137,7796,6564,
+                                          7405,7298,7867,7580,9771,11647,
+                                          25827,25616,15632,10454,13278,
+                                          16858,27550,18719,48277,28639,32971,
+                                          20762,17972,18975,15609,18617,
+                                          6124,2116)
+       )
+
+```
+
+```{r}
+colnames(cdc) <- c('Year', 'Cases')
+
+head(cdc)
+```
+
+```{r}
+ggplot(cdc, aes(Year, Cases)) +
+  geom_point() +
+  geom_line() +
+  labs(title="CDC Pertussis Case Numbers Over Time", x="Year", y="Case Numbers")
+```
+
+The first "whole-cell" pertussis vaccine program started in 1942.
+
+```{r}
+ggplot(cdc, aes(Year, Cases)) +
+  geom_point() +
+  geom_line() +
+  geom_vline(xintercept=1942, col = 'blue') +
+  geom_vline(xintercept=1980, col = 'green', linetype = 2) +
+  geom_vline(xintercept=1995, col = 'red', linetype = 2) +
+  labs(title="CDC Pertussis Case Numbers Over Time", x="Year", y="Case Numbers")
+```
+
+> Q3. Describe what happened after the introduction of the aP vaccine? Do you have a possible explanation for the observed trend?
+
+After the introduction of the wP vaccine cases went down dramatically. After the introduction of the aP vaccines, cases stayed stagnant and then rose slightly. This may be due to increasing public resistance toward vaccines, mutations, and a drop in effectiveness.
+
+The CMI-PB project was created to study the public health concern of pertussis cases/outbreaks and waning vaccine efficacy.
+
+```{r}
+# data is in json format
+subject <- read_json("https://www.cmi-pb.org/api/subject", simplifyVector = TRUE)
+```
+
+```{r}
+head(subject)
+```
+
+> Q4. How may aP and wP infancy vaccinated subjects are in the dataset?
+
+```{r}
+table(subject$infancy_vac)
+```
+
+> Q5. How many Male and Female subjects/patients are in the dataset?
+
+```{r}
+table(subject$biological_sex)
+```
+
+> Q6. What is the breakdown of race and biological sex (e.g. number of Asian females, White males etc…)?
+
+```{r}
+table(subject$race, subject$biological_sex)
+```
+
+```{r}
+df <- data.frame(
+   stringsAsFactors = FALSE,
+  Table.Description = c("Subject information",
+                        "Specimen information","Antibody titer data",
+                        "Gene expression data","Plasma proteomics (Olink) data",
+                        "Cell frequency data"),
+           Subjects = c(118L, NA, 112L, 93L, 75L, 74L),
+            Samples = c(NA, 939L, 829L, 507L, 406L, 414L),
+       API.endpoint = c("subject","specimen",
+                        "plasma_ab_titer","pbmc_gene_ expression",
+                        "plasma_ proteomics_ targeted","pbmc_cell_frequency")
+)
+
+head(df)
+```
+Now let's read some more data.
+
+```{r}
+specimen <- read_json("http://cmi-pb.org/api/specimen", simplifyVector = TRUE)
+
+head(specimen)
+```
+Joining subject and specimen tables.
+
+```{r}
+meta <- inner_join(subject, specimen)
+head(meta)
+```
+
+```{r}
+ncol(subject)
+ncol(specimen)
+ncol(meta)
+```
+## Examine IgG1 Ab titer levels
+
+```{r}
+ab <- read_json("http://cmi-pb.org/api/ab_titer", simplifyVector = TRUE)
+
+head(ab)
+```
+Join meta and ab data.
+
+```{r}
+abdata <- inner_join(meta, ab)
+```
+```{r}
+dim(abdata)
+```
+> Q11. How many specimens (i.e. entries in abdata) do we have for each isotype?
+
+```{r}
+table(abdata$isotype)
+```
+> Q12. What do you notice about the number of visit 8 specimens compared to other visits?
+
+```{r}
+table(abdata$visit)
+```
+There are way less visit 8 specimens because the project is still ongoing.
+
+```{r}
+# Examining IgG1 Ab titer levels
+# Using `filter()` function from dplyr
+# Want to focus on only IgG1 isotype and visits 1-7
+
+ig1 <- filter(abdata, isotype == "IgG1", visit != 8)
+head(ig1)
+```
+
+```{r}
+# Boxplot of antigen levels over time with facet by visit
+
+ggplot(ig1) +
+  aes(MFI, antigen) +
+  geom_boxplot() + 
+  facet_wrap(vars(visit), nrow=2)
+```
+
+> Q14. What antigens show differences in the level of IgG1 antibody titers recognizing them over time? Why these and not others?
+
+FIM 2/3 clearly changes. This is "Fimbrial protein" that makes the bacteria pilus and is involved in cell adhesion.
+
+PT Pertussis toxin complex
+
+FHA Filamentous hemagglutinin: Surface-associated adherence protein involved in Bordetlla pertussis, which is a component of some new acellular pertussis vaccines.
+
+```{r}
+ggplot(ig1) +
+  aes(MFI, antigen, col=infancy_vac ) +
+  geom_boxplot(show.legend = FALSE) + 
+  facet_wrap(vars(visit), nrow=2) +
+  theme_bw()
+```
+```{r}
+filter(ig1, antigen=="Measles") %>%
+  ggplot() +
+  aes(MFI, col=infancy_vac) +
+  geom_boxplot(show.legend = TRUE) +
+  facet_wrap(vars(visit)) +
+  theme_bw()
+```
+
+
+```{r}
+url <- "https://www.cmi-pb.org/api/v2/rnaseq?versioned_ensembl_gene_id=eq.ENSG00000211896.7"
+
+rna <- read_json(url, simplifyVector = TRUE) 
+```
+
+```{r}
+ssrna <- inner_join(rna, meta)
+```
+
+```{r}
+ggplot(ssrna) +
+  aes(visit, tpm, group=subject_id) +
+  geom_point() +
+  geom_line(alpha=0.2)
+```
+```{r}
+ggplot(ssrna) +
+  aes(tpm, col=infancy_vac) +
+  geom_boxplot() +
+  facet_wrap(vars(visit))
+```
+```{r}
+ssrna %>%  
+  filter(visit==4) %>% 
+  ggplot() +
+    aes(tpm, col=infancy_vac) + geom_density() + 
+    geom_rug() 
+```
+

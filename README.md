@@ -1,6 +1,6 @@
-# BIMM-143
+# BIMM-143 Repo
 
-From: [BIMM 143](https://bioboot.github.io/bimm143_S23/)
+From: [BIMM 143 Spring 2023](https://bioboot.github.io/bimm143_S23/)
 
 - **[Class 05: Data Visualization with ggplot2](https://github.com/ajcagle8/BIMM-143/blob/main/class05.rmd)** [source](https://github.com/ajcagle8/BIMM-143/blob/main/class05.rmd)
 - **[Class 06: R Functions](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%206/bimm143_hw6.Rmd)** [source](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%206/bimm143_hw6.Rmd)

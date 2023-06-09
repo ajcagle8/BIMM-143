@@ -1,4 +1,4 @@
-# BIMM-143 Repo
+# BIMM-143 Index of Material
 
 From: [BIMM 143 Spring 2023](https://bioboot.github.io/bimm143_S23/)
 

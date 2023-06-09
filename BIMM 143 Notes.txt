@@ -1,0 +1,24 @@
+BIMM 143 Notes --
+
+- Use nucleotide BLAST for nucleotide (i.e. DNA) sequences
+
+- E value is the likelihood that the BLAST result / matching happens by chance
+
+- Higher coverage and lower identity versus lower coverage and higher identity? Depends on the context
+
+- One less intron than exon
+
+- Gene ontology, gene info on aligment page on NCBI BLAST website
+
+- REFSEQ
+
+- 
+
+
+
+
+Alignment
+
+Optimal score
+
+Relationship between the sequences?

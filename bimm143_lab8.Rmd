@@ -1,0 +1,182 @@
+---
+title: "Lab 8"
+author: "Alex Cagle"
+date: "2023-05-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 8
+
+```{r}
+# Save your input data file into your Project directory
+fna.data <- "WisconsinCancer.csv"
+
+# Complete the following code to input the data and store as wisc.df
+wisc.data <- read.csv(fna.data, row.names=1)
+```
+
+```{r}
+head(wisc.data)
+```
+
+```{r}
+# Q: How many patient samples are there in the dataset?
+nrow(wisc.data)
+```
+There are `r nrow(wisc.data)` patients in the dataset.
+
+```{r}
+# Q: How many cancer (M) and non-cancer (B) samples are there?
+table(wisc.data$diagnosis)
+
+```
+```{r}
+diagnosis <- as.factor(wisc.data$diagnosis)
+```
+
+```{r}
+wisc <- wisc.data[,-1]
+```
+
+```{r}
+# Q: How many 'dimensions', 'vairables', 'columns' are there in the dataset?
+ncol(wisc)
+```
+
+## Principal Component Analysis
+
+> PCA aims to take a large set of data and reduce its dimensionality while retaining the relationships present in the data, which can help us analyze data more easily. 
+
+```{r}
+round(colMeans(wisc))
+```
+
+
+```{r}
+pca <- prcomp(wisc, scale = TRUE)
+summary(pca)
+```
+```{r}
+plot(pca$x[,1], pca$x[,2], col=diagnosis)
+```
+```{r}
+# Create a data.frame for ggplot
+df <- as.data.frame(pca$x)
+df$diagnosis <- diagnosis
+
+# Load the ggplot2 package
+library(ggplot2)
+
+# Make a scatter plot colored by diagnosis
+ggplot(df) + 
+  aes(PC1, PC2, col=diagnosis) + 
+  geom_point()
+```
+
+
+> Q: From your results, what proportion of the original variance is captured by the first principal components (PC1)?
+> Principal component 1 represents the highest variation. Proportion of variance captured by PC1 = 44.27%
+
+> Q: How many principal components (PCs) are required to describe at least 70% of the original variance in the data?
+> 3 dimensions (PC1, PC2, and PC3)
+
+> Q: How many principal components (PCs) are required to describe at least 90% of the original data.
+> 7 dimensions (PC1 through PC7)
+
+> Q: How much variance is captured in the top 3 PC's?
+> The top 3 PC's capture 72.6% of the variance.
+
+
+> Q9: For the first principal component, what is the component of the loading vector (i.e. wisc.pr$rotation[,1]) for the feature concave.points_mean? This tells us how much this original feature contributes to the first PC.
+
+```{r}
+pca$rotation
+pca$rotation["concave.points_mean", 1]
+```
+```{r}
+attributes(pca)
+```
+
+## Combine PCA results with clustering
+
+We can use our new PCA variables (i.e. the scores along the PCs contained in t `pca$x`) as input for other methods such as clustering.
+
+```{r}
+# Hclust needs a distance matrix as input
+d <- dist( pca$x[, 1:3])
+
+hc <- hclust(d, method = "ward.D2")
+plot(hc)
+```
+
+To get our cluster membership vector we can use the `cutree()` function and specify a height (`h`) or number of groups (`k`).
+
+```{r}
+grps <- cutree(hc, h=80)
+table(grps)
+```
+
+I want to find out how many diagnoses "M" and "B" are in each grp?
+
+```{r}
+table(diagnosis)
+```
+```{r}
+table(diagnosis, grps)
+```
+```{r}
+plot(pca$x[,1:2], col=grps)
+```
+
+```{r}
+plot(pca$x[,1:2], col=diagnosis)
+```
+
+
+```{r}
+# Create a data.frame for ggplot
+df <- as.data.frame(pca$x)
+
+# Make a scatter plot colored by grps
+ggplot(df) + 
+  aes(PC1, PC2) + 
+  geom_point(col=grps)
+```
+
+> Q15. What is the specificity and sensitivity of our current results?
+
+```{r}
+# group 1 is mostly malignant while group 2 is mostly benign
+
+# sensitivity = TP / (TP + FN)
+sensitivity <- 179 / (179 + 24)
+
+# specificity = TN / (TN + FN)
+specificity <- 333 / (333 + 24)
+
+print(sensitivity)
+print(specificity)
+```
+
+## Prediction
+```{r}
+#url <- "new_samples.csv"
+url <- "https://tinyurl.com/new-samples-CSV"
+new <- read.csv(url)
+npc <- predict(pca, newdata=new)
+npc
+```
+
+```{r}
+plot(pca$x[,1:2], col=grps)
+points(npc[,1], npc[,2], col="blue", pch=16, cex=3)
+text(npc[,1], npc[,2], c(1,2), col="white")
+```
+
+> Q16: Which of these new patients should we prioritize for follow up based on your results?
+
+We should follow up with the data points that are colored in red (i.e. group 1), since they represent the sick patients.

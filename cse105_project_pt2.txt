@@ -1,0 +1,9 @@
+Function examples:
+
+a's are duplicated and b's are deleted (replaced with blanks)
+
+1) f('a') = 'aa'
+2) f('b') = '_'
+3) f('aa') = 'aaaa'
+4) f('bb') = '__'
+5) f('ab') = 'aa_'

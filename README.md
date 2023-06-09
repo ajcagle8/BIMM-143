@@ -12,6 +12,10 @@ From: [BIMM 143 Spring 2023](https://bioboot.github.io/bimm143_S23/)
 
 - **[Class 09-10: Structural Bioinformatics](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab9.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab10.Rmd)
 
+- **[Class 11: Halloween Candy Mini-Project](https://github.com/ajcagle8/BIMM-143/blob/main/HalloweenCandy_miniproject.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/halloween_candy.Rmd)
+
+- **[Class 13: Pathway Analysis](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%2013/lab13_bimm143.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%2013/lab13_bimm143.Rmd)
+
 - **[Class 12: RNASeq Analysis](https://github.com/ajcagle8/BIMM-143/blob/main/lab12.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/lab12.Rmd)
 
 - **[Class 16 EC: Downstream Analysis](https://github.com/ajcagle8/BIMM-143/blob/main/class16_ec.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/class16_ec.Rmd)

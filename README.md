@@ -8,7 +8,7 @@ From: [BIMM 143 Spring 2023](https://bioboot.github.io/bimm143_S23/)
 
 - **[Class 07: Introduction to Machine Learning](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%207/Class%2007_%20Clustering%20and%20PCA.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/Lab%207/Lab%207.qmd)
 
-- - **[Class 09-10: Structural Bioinformatics](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab9.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab10.Rmd)
+- **[Class 09-10: Structural Bioinformatics](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab9.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/bimm143_lab10.Rmd)
 
 - **[Class 12: RNASeq Analysis](https://github.com/ajcagle8/BIMM-143/blob/main/lab12.pdf)** | [source](https://github.com/ajcagle8/BIMM-143/blob/main/lab12.Rmd)
 
